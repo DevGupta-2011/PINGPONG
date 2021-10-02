@@ -2,6 +2,8 @@
 var right_wristX = "";
 var right_wristY = "";
 
+var score = "";
+
 var paddle2 =10,paddle1=10;
 
 var paddle1X = 10,paddle1Height = 110;
@@ -28,7 +30,7 @@ canvas.parent("canvas")
 webcam =  createCapture(VIDEO)
 webcam.size(700,600)
 webcam.parent("webcam")
-posenet = ml5.poseNet(video,model_loaded)
+posenet = ml5.poseNet(webcam,model_loaded)
 posenet.on('pose',gotposes)
 }
 function model_loaded(){
@@ -36,8 +38,9 @@ console.log("model-loaded!")
 }
 function gotposes(results){
 if(results.length > 0){
-  right_wristX = results[0].pose.right_wrist.x;
-  right_wristY = results[0].pose.right_wrist.y;
+  right_wristX = results[0].pose.rightWrist.x;
+  right_wristY = results[0].pose.rightWrist.y;
+  score = results[0].pose.rightWrist.confidence;
 }
 }
 
@@ -81,6 +84,10 @@ function draw(){
    
    //function move call which in very important
     move();
+  if(score > 0.2){
+    fill("red")
+    circle(right_wristX,right_wristY,20);
+  }
 }
 
 
